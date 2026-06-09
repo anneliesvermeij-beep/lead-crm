@@ -610,6 +610,39 @@ textarea:focus {
   gap: 6px;
 }
 
+/* Login ------------------------------------------------------------------- */
+
+.login-scherm {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-kaart {
+  background: var(--vlak);
+  border: 1px solid var(--rand);
+  border-radius: 14px;
+  box-shadow: var(--schaduw);
+  padding: 28px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.login-kaart h1 {
+  font-size: 19px;
+}
+.login-kaart .knop {
+  margin-top: 4px;
+}
+
+.kop-knoppen {
+  display: flex;
+  gap: 8px;
+}
+
 /* Responsive -------------------------------------------------------------- */
 
 @media (max-width: 640px) {

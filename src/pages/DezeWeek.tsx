@@ -20,6 +20,7 @@ import { Star } from '../components/Star';
 import { SnoozeMenu } from '../components/SnoozeMenu';
 import { NieuweLeadForm } from '../components/NieuweLeadForm';
 import { MailOpstellen } from '../components/MailOpstellen';
+import { supabase } from '../supabaseClient';
 
 export function DezeWeek() {
   const leads = useLeads();
@@ -66,9 +67,18 @@ export function DezeWeek() {
           <span className="studio-naam">Photography &amp; Images</span>
           <span className="app-kop-sub">Deze week</span>
         </div>
-        <button className="knop knop-rustig" onClick={() => setNieuwOpen(true)}>
-          + Nieuwe lead
-        </button>
+        <div className="kop-knoppen">
+          <button className="knop knop-rustig" onClick={() => setNieuwOpen(true)}>
+            + Nieuwe lead
+          </button>
+          <button
+            className="knop knop-rustig"
+            onClick={() => supabase.auth.signOut()}
+            title="Uitloggen"
+          >
+            Uitloggen
+          </button>
+        </div>
       </header>
 
       <section className="metrics">
