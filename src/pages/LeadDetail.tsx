@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import { useLeads } from '../store/useLeads';
+import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead, logContact } from '../store/leadStore';
 import { snooze, isDatumVerlopen } from '../logic/leadLogic';
 import type { ContactMoment, Lead, LeadStatus } from '../types';
@@ -14,6 +14,7 @@ import { MailOpstellen } from '../components/MailOpstellen';
 export function LeadDetail() {
   const { id } = useParams();
   const leads = useLeads();
+  const storeStatus = useStoreStatus();
   const navigate = useNavigate();
   const lead = useMemo(() => leads.find((l) => l.id === id), [leads, id]);
 
@@ -24,7 +25,9 @@ export function LeadDetail() {
   if (!lead) {
     return (
       <div className="pagina">
-        <p className="rustige-tekst">Lead niet gevonden.</p>
+        <p className="rustige-tekst">
+          {storeStatus === 'laden' ? 'Bezig met laden…' : 'Lead niet gevonden.'}
+        </p>
         <Link className="knop knop-rustig" to="/">
           ← Terug
         </Link>

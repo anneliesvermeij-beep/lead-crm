@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import { useLeads } from '../store/useLeads';
+import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead } from '../store/leadStore';
 import {
   isVandaagBucket,
@@ -23,6 +23,7 @@ import { MailOpstellen } from '../components/MailOpstellen';
 
 export function DezeWeek() {
   const leads = useLeads();
+  const storeStatus = useStoreStatus();
   const navigate = useNavigate();
   const [nieuwOpen, setNieuwOpen] = useState(false);
   const [mailLead, setMailLead] = useState<Lead | null>(null);
@@ -55,6 +56,8 @@ export function DezeWeek() {
   }
 
   const heeftLeads = leads.length > 0;
+  const aanHetLaden = storeStatus === 'laden' && !heeftLeads;
+  const laadFout = storeStatus === 'fout' && !heeftLeads;
 
   return (
     <div className="pagina">
@@ -79,7 +82,15 @@ export function DezeWeek() {
         <MetricTile label="Klant geworden" waarde={metrics.klant} toon="success" />
       </section>
 
-      {!heeftLeads ? (
+      {aanHetLaden ? (
+        <div className="leeg-vlak">
+          <p>Bezig met laden…</p>
+        </div>
+      ) : laadFout ? (
+        <div className="leeg-vlak">
+          <p>Kon de leads niet laden. Ververs de pagina of probeer het later opnieuw.</p>
+        </div>
+      ) : !heeftLeads ? (
         <div className="leeg-vlak">
           <p>Nog geen leads.</p>
           <button className="knop knop-primair" onClick={() => setNieuwOpen(true)}>

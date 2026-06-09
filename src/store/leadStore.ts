@@ -1,52 +1,29 @@
 import type { Lead, ContactMoment } from '../types';
 import { genId } from '../logic/leadLogic';
-import { maakSeedLeads } from '../data/seed';
-import { startOfDay } from 'date-fns';
+import { supabase, CRM_TABEL } from '../supabaseClient';
 
 /**
- * Kleine opslag-abstractie. Nu localStorage; later zonder UI-wijziging te
- * vervangen door een echte backend (zelfde functiehandtekeningen).
+ * Opslag via Supabase. Zelfde functienamen als voorheen, zodat de schermen
+ * onveranderd blijven.
  *
- * Belangrijk: we houden één in-memory `cache`-array vast en geven die als
- * stabiele referentie terug via getLeads(). Pas bij een mutatie maken we een
- * NIEUWE array — zo werkt useSyncExternalStore zonder oneindige loop.
+ * Aanpak: we houden één in-memory `cache` aan (stabiele referentie voor
+ * useSyncExternalStore). Bij opstarten laden we alles één keer. Mutaties
+ * passen we direct in de cache toe (zodat het scherm meteen reageert) en
+ * schrijven we op de achtergrond naar Supabase.
  */
 
-const SLEUTEL = 'lead-crm:leads:v1';
+export type StoreStatus = 'laden' | 'klaar' | 'fout';
 
 type Luisteraar = () => void;
 const luisteraars = new Set<Luisteraar>();
 
-let cache: Lead[] | null = null;
+let cache: Lead[] = [];
+let status: StoreStatus = 'laden';
 
-function laad(): Lead[] {
-  if (cache) return cache;
-  try {
-    const ruw = localStorage.getItem(SLEUTEL);
-    if (ruw) {
-      cache = JSON.parse(ruw) as Lead[];
-      return cache;
-    }
-  } catch {
-    // val terug op seed
-  }
-  cache = maakSeedLeads();
-  bewaar(cache);
-  return cache;
-}
-
-function bewaar(leads: Lead[]): void {
-  localStorage.setItem(SLEUTEL, JSON.stringify(leads));
-}
-
-/** Zet de nieuwe lijst als cache (nieuwe referentie), persisteer en meld. */
-function commit(leads: Lead[]): void {
-  cache = leads;
-  bewaar(leads);
+function meld(): void {
   luisteraars.forEach((l) => l());
 }
 
-/** Abonneer op wijzigingen (voor React useSyncExternalStore). */
 export function abonneer(luisteraar: Luisteraar): () => void {
   luisteraars.add(luisteraar);
   return () => {
@@ -55,21 +32,101 @@ export function abonneer(luisteraar: Luisteraar): () => void {
 }
 
 export function getLeads(): Lead[] {
-  return laad();
+  return cache;
+}
+
+export function getStatus(): StoreStatus {
+  return status;
 }
 
 export function getLead(id: string): Lead | undefined {
-  return laad().find((l) => l.id === id);
+  return cache.find((l) => l.id === id);
 }
 
-/** Slaat een bestaande lead op (vervangt op id); maakt een nieuwe array. */
+// --- Mapping tussen Lead (camelCase) en de Supabase-rij (snake_case) --------
+
+interface CrmRij {
+  id: string;
+  bedrijfsnaam: string;
+  branche: Lead['branche'];
+  plaats: string | null;
+  email: string | null;
+  telefoon: string | null;
+  website: string | null;
+  status: Lead['status'];
+  prioriteit: boolean;
+  volgende_actie_op: string | null;
+  contact_momenten: ContactMoment[] | null;
+  aangemaakt_op: string;
+}
+
+function vanRij(r: CrmRij): Lead {
+  return {
+    id: r.id,
+    bedrijfsnaam: r.bedrijfsnaam,
+    branche: r.branche,
+    plaats: r.plaats ?? undefined,
+    email: r.email ?? undefined,
+    telefoon: r.telefoon ?? undefined,
+    website: r.website ?? undefined,
+    status: r.status,
+    prioriteit: r.prioriteit,
+    volgendeActieOp: r.volgende_actie_op ?? undefined,
+    contactMomenten: r.contact_momenten ?? [],
+    aangemaaktOp: r.aangemaakt_op,
+  };
+}
+
+function naarRij(l: Lead): CrmRij {
+  return {
+    id: l.id,
+    bedrijfsnaam: l.bedrijfsnaam,
+    branche: l.branche,
+    plaats: l.plaats ?? null,
+    email: l.email ?? null,
+    telefoon: l.telefoon ?? null,
+    website: l.website ?? null,
+    status: l.status,
+    prioriteit: l.prioriteit,
+    volgende_actie_op: l.volgendeActieOp ?? null,
+    contact_momenten: l.contactMomenten,
+    aangemaakt_op: l.aangemaaktOp,
+  };
+}
+
+// --- Laden ------------------------------------------------------------------
+
+export async function laadAlles(): Promise<void> {
+  status = 'laden';
+  meld();
+  const { data, error } = await supabase.from(CRM_TABEL).select('*');
+  if (error) {
+    console.error('Supabase laden mislukt:', error.message);
+    status = 'fout';
+    meld();
+    return;
+  }
+  cache = (data as CrmRij[]).map(vanRij);
+  status = 'klaar';
+  meld();
+}
+
+function zetCache(next: Lead[]): void {
+  cache = next;
+  meld();
+}
+
+async function schrijf(lead: Lead): Promise<void> {
+  const { error } = await supabase.from(CRM_TABEL).upsert(naarRij(lead));
+  if (error) console.error('Supabase opslaan mislukt:', error.message);
+}
+
+// --- Mutaties (optimistisch: eerst cache, dan Supabase) ---------------------
+
 export function saveLead(lead: Lead): Lead {
-  const huidig = laad();
-  const bestaat = huidig.some((l) => l.id === lead.id);
-  const nieuw = bestaat
-    ? huidig.map((l) => (l.id === lead.id ? lead : l))
-    : [...huidig, lead];
-  commit(nieuw);
+  const bestaat = cache.some((l) => l.id === lead.id);
+  zetCache(bestaat ? cache.map((l) => (l.id === lead.id ? lead : l)) : [...cache, lead]);
+  void schrijf(lead);
   return lead;
 }
 
@@ -78,7 +135,6 @@ export type NieuweLeadInvoer = Pick<
   'bedrijfsnaam' | 'branche' | 'plaats' | 'email' | 'telefoon' | 'website'
 >;
 
-/** Voegt een nieuwe lead toe: status 'nieuw', volgendeActieOp = vandaag. */
 export function addLead(invoer: NieuweLeadInvoer): Lead {
   const nieuweLead: Lead = {
     id: genId(),
@@ -90,15 +146,15 @@ export function addLead(invoer: NieuweLeadInvoer): Lead {
     website: invoer.website?.trim() || undefined,
     status: 'nieuw',
     prioriteit: false,
-    volgendeActieOp: startOfDay(new Date()).toISOString(),
+    volgendeActieOp: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
     contactMomenten: [],
     aangemaaktOp: new Date().toISOString(),
   };
-  commit([...laad(), nieuweLead]);
+  zetCache([...cache, nieuweLead]);
+  void schrijf(nieuweLead);
   return nieuweLead;
 }
 
-/** Voegt een contactmoment toe aan een lead (nieuwste boven in de UI). */
 export function logContact(
   leadId: string,
   kanaal: ContactMoment['kanaal'],
@@ -111,16 +167,20 @@ export function logContact(
     notitie: notitie.trim(),
   };
   let bijgewerkt: Lead | undefined;
-  const nieuw = laad().map((l) => {
+  const next = cache.map((l) => {
     if (l.id !== leadId) return l;
     bijgewerkt = { ...l, contactMomenten: [moment, ...l.contactMomenten] };
     return bijgewerkt;
   });
-  if (bijgewerkt) commit(nieuw);
+  if (bijgewerkt) {
+    zetCache(next);
+    void schrijf(bijgewerkt);
+  }
   return bijgewerkt;
 }
 
-/** Normaliseer voor lichte duplicaatcheck. */
+// --- Duplicaatcheck ---------------------------------------------------------
+
 function normaliseer(s: string | undefined): string {
   return (s ?? '')
     .toLowerCase()
@@ -130,14 +190,13 @@ function normaliseer(s: string | undefined): string {
     .trim();
 }
 
-/** Geeft een bestaande lead terug als naam of website al lijkt te bestaan. */
 export function vindMogelijkDuplicaat(
   bedrijfsnaam: string,
   website?: string,
 ): Lead | undefined {
   const naam = normaliseer(bedrijfsnaam);
   const site = normaliseer(website);
-  return laad().find((l) => {
+  return cache.find((l) => {
     if (naam && normaliseer(l.bedrijfsnaam) === naam) return true;
     if (site && l.website && normaliseer(l.website) === site) return true;
     return false;
