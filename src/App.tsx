@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { DezeWeek } from './pages/DezeWeek';
 import { LeadDetail } from './pages/LeadDetail';
+import { AlleLeads } from './pages/AlleLeads';
 import { Login } from './components/Login';
 import { useSession } from './auth/useSession';
 import { laadAlles } from './store/leadStore';
@@ -32,6 +33,7 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<DezeWeek />} />
+        <Route path="/alle" element={<AlleLeads />} />
         <Route path="/lead/:id" element={<LeadDetail />} />
       </Routes>
     </HashRouter>

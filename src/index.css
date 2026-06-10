@@ -666,6 +666,28 @@ textarea:focus {
 .kop-knoppen {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterbalk {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filterbalk .zoek {
+  flex: 1;
+  min-width: 180px;
+}
+.filterbalk input,
+.filterbalk select {
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--tekst);
+  background: var(--vlak);
+  border: 1px solid var(--rand-sterk);
+  border-radius: 8px;
+  padding: 8px 10px;
 }
 
 .nieuws-badge {

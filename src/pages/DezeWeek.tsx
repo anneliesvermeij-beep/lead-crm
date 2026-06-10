@@ -69,6 +69,9 @@ export function DezeWeek() {
           <span className="app-kop-sub">Deze week</span>
         </div>
         <div className="kop-knoppen">
+          <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
+            Alle leads
+          </button>
           <button className="knop knop-rustig" onClick={() => setNieuwOpen(true)}>
             + Nieuwe lead
           </button>
