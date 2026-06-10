@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { heeftNieuws } from '../logic/leadLogic';
 import type { Branche, LeadStatus } from '../types';
@@ -25,7 +27,7 @@ export function AlleLeads() {
   const [status, setStatus] = useState<StatusFilter>('alle');
   const [branche, setBranche] = useState<BrancheFilter>('alle');
   const [soort, setSoort] = useState<SoortFilter>('alle');
-  const [sorteer, setSorteer] = useState<'score' | 'naam'>('score');
+  const [sorteer, setSorteer] = useState<'score' | 'naam' | 'nieuwste'>('score');
 
   const branches = useMemo(
     () => Array.from(new Set(leads.map((l) => l.branche))),
@@ -43,11 +45,15 @@ export function AlleLeads() {
         if (z && !`${l.bedrijfsnaam} ${l.plaats ?? ''}`.toLowerCase().includes(z)) return false;
         return true;
       })
-      .sort((a, b) =>
-        sorteer === 'score'
-          ? b.score - a.score || a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl')
-          : a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl'),
-      );
+      .sort((a, b) => {
+        if (sorteer === 'score') {
+          return b.score - a.score || a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl');
+        }
+        if (sorteer === 'nieuwste') {
+          return (b.aangemaaktOp || '').localeCompare(a.aangemaaktOp || '');
+        }
+        return a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl');
+      });
   }, [leads, zoek, status, branche, soort, sorteer]);
 
   return (
@@ -90,9 +96,13 @@ export function AlleLeads() {
           <option value="opvolging">In opvolging</option>
           <option value="voorraad">Voorraad</option>
         </select>
-        <select value={sorteer} onChange={(e) => setSorteer(e.target.value as 'score' | 'naam')}>
+        <select
+          value={sorteer}
+          onChange={(e) => setSorteer(e.target.value as 'score' | 'naam' | 'nieuwste')}
+        >
           <option value="score">Sorteer: score</option>
           <option value="naam">Sorteer: naam</option>
+          <option value="nieuwste">Sorteer: nieuwste</option>
         </select>
       </div>
 
@@ -122,6 +132,9 @@ export function AlleLeads() {
                 {BRANCHE_LABELS[lead.branche]}
                 {lead.plaats ? ` · ${lead.plaats}` : ''}
                 {!lead.volgendeActieOp ? ' · voorraad' : ''}
+                {lead.aangemaaktOp
+                  ? ` · toegevoegd ${format(new Date(lead.aangemaaktOp), 'd MMM', { locale: nl })}`
+                  : ''}
               </span>
             </div>
             <StatusBadge status={lead.status} />
