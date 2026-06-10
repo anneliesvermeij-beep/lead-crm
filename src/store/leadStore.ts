@@ -179,6 +179,24 @@ export function logContact(
   return bijgewerkt;
 }
 
+/** Verwijdert één contactmoment uit een lead. */
+export function verwijderContact(leadId: string, momentId: string): Lead | undefined {
+  let bijgewerkt: Lead | undefined;
+  const next = cache.map((l) => {
+    if (l.id !== leadId) return l;
+    bijgewerkt = {
+      ...l,
+      contactMomenten: l.contactMomenten.filter((m) => m.id !== momentId),
+    };
+    return bijgewerkt;
+  });
+  if (bijgewerkt) {
+    zetCache(next);
+    void schrijf(bijgewerkt);
+  }
+  return bijgewerkt;
+}
+
 // --- Duplicaatcheck ---------------------------------------------------------
 
 function normaliseer(s: string | undefined): string {

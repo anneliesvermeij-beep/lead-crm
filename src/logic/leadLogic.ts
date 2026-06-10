@@ -15,6 +15,7 @@ import type { Lead, LeadStatus, ContactMoment } from '../types';
 const STATUS_RANG: Record<LeadStatus, number> = {
   nieuw: 0,
   afgewezen: 0,
+  vervallen: 0,
   benaderd: 1,
   in_gesprek: 2,
   klant: 3,
@@ -29,9 +30,13 @@ function actieDatum(lead: Lead): Date | null {
   return lead.volgendeActieOp ? new Date(lead.volgendeActieOp) : null;
 }
 
-/** Lead is actief op te volgen (niet klant of afgewezen). */
+/** Lead is actief op te volgen (niet klant, afgewezen of vervallen). */
 export function isActief(lead: Lead): boolean {
-  return lead.status !== 'klant' && lead.status !== 'afgewezen';
+  return (
+    lead.status !== 'klant' &&
+    lead.status !== 'afgewezen' &&
+    lead.status !== 'vervallen'
+  );
 }
 
 /** Heeft deze lead recent nieuws? (nieuwste contactmoment begint met 📰) */

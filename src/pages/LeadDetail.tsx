@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
-import { saveLead, logContact } from '../store/leadStore';
+import { saveLead, logContact, verwijderContact } from '../store/leadStore';
 import { snooze, isDatumVerlopen, heeftNieuws } from '../logic/leadLogic';
 import type { ContactMoment, Lead, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
@@ -167,6 +167,17 @@ export function LeadDetail() {
             <ul className="tijdlijn">
               {lead.contactMomenten.map((m, i) => (
                 <li key={m.id} className={`moment ${i === 0 ? 'moment-nieuwste' : ''}`}>
+                  <button
+                    className="moment-verwijder"
+                    title="Notitie verwijderen"
+                    onClick={() => {
+                      if (confirm('Deze notitie verwijderen?')) {
+                        verwijderContact(lead!.id, m.id);
+                      }
+                    }}
+                  >
+                    ✕
+                  </button>
                   <div className="moment-notitie">{metLinks(m.notitie)}</div>
                   <div className="moment-meta">
                     {format(new Date(m.datum), 'd MMM yyyy', { locale: nl })} ·{' '}

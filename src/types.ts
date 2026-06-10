@@ -3,7 +3,8 @@ export type LeadStatus =
   | 'benaderd'
   | 'in_gesprek'
   | 'klant'
-  | 'afgewezen';
+  | 'afgewezen'
+  | 'vervallen';
 
 export type Branche =
   | 'webshop'
@@ -41,6 +42,7 @@ export const STATUS_LABELS: Record<LeadStatus, string> = {
   in_gesprek: 'In gesprek',
   klant: 'Klant',
   afgewezen: 'Afgewezen',
+  vervallen: 'Vervallen',
 };
 
 export const BRANCHE_LABELS: Record<Branche, string> = {
@@ -57,4 +59,5 @@ export const STATUS_VOLGORDE: LeadStatus[] = [
   'in_gesprek',
   'klant',
   'afgewezen',
+  'vervallen',
 ];
