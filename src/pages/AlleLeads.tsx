@@ -10,6 +10,12 @@ type StatusFilter = LeadStatus | 'alle';
 type BrancheFilter = Branche | 'alle';
 type SoortFilter = 'alle' | 'opvolging' | 'voorraad';
 
+function scoreTier(score: number): string {
+  if (score >= 70) return 'score-groen';
+  if (score >= 40) return 'score-oranje';
+  return 'score-rood';
+}
+
 export function AlleLeads() {
   const leads = useLeads();
   const storeStatus = useStoreStatus();
@@ -19,6 +25,7 @@ export function AlleLeads() {
   const [status, setStatus] = useState<StatusFilter>('alle');
   const [branche, setBranche] = useState<BrancheFilter>('alle');
   const [soort, setSoort] = useState<SoortFilter>('alle');
+  const [sorteer, setSorteer] = useState<'score' | 'naam'>('score');
 
   const branches = useMemo(
     () => Array.from(new Set(leads.map((l) => l.branche))),
@@ -36,8 +43,12 @@ export function AlleLeads() {
         if (z && !`${l.bedrijfsnaam} ${l.plaats ?? ''}`.toLowerCase().includes(z)) return false;
         return true;
       })
-      .sort((a, b) => a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl'));
-  }, [leads, zoek, status, branche, soort]);
+      .sort((a, b) =>
+        sorteer === 'score'
+          ? b.score - a.score || a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl')
+          : a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl'),
+      );
+  }, [leads, zoek, status, branche, soort, sorteer]);
 
   return (
     <div className="pagina">
@@ -79,6 +90,10 @@ export function AlleLeads() {
           <option value="opvolging">In opvolging</option>
           <option value="voorraad">Voorraad</option>
         </select>
+        <select value={sorteer} onChange={(e) => setSorteer(e.target.value as 'score' | 'naam')}>
+          <option value="score">Sorteer: score</option>
+          <option value="naam">Sorteer: naam</option>
+        </select>
       </div>
 
       <p className="rustige-tekst" style={{ marginBottom: 10 }}>
@@ -91,19 +106,24 @@ export function AlleLeads() {
         {resultaat.map((lead) => (
           <li
             key={lead.id}
-            className="rij rij-compact"
+            className="rij rij-alle"
             onClick={() => navigate(`/lead/${lead.id}`)}
           >
-            <span className="rij-naam">
-              {lead.prioriteit && <span className="ster-inline">★</span>}
-              {lead.bedrijfsnaam}
-              {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰</span>}
+            <span className={`score-bol ${scoreTier(lead.score)}`} title={`Score ${lead.score}`}>
+              {lead.score}
             </span>
-            <span className="rij-datum">
-              {BRANCHE_LABELS[lead.branche]}
-              {lead.plaats ? ` · ${lead.plaats}` : ''}
-              {!lead.volgendeActieOp ? ' · voorraad' : ''}
-            </span>
+            <div className="rij-midden">
+              <span className="rij-naam">
+                {lead.prioriteit && <span className="ster-inline">★</span>}
+                {lead.bedrijfsnaam}
+                {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰</span>}
+              </span>
+              <span className="rij-context">
+                {BRANCHE_LABELS[lead.branche]}
+                {lead.plaats ? ` · ${lead.plaats}` : ''}
+                {!lead.volgendeActieOp ? ' · voorraad' : ''}
+              </span>
+            </div>
             <StatusBadge status={lead.status} />
           </li>
         ))}

@@ -33,6 +33,14 @@ export interface Lead {
   volgendeActieOp?: string; // ISO-datum; bepaalt of een lead op "deze week" verschijnt
   contactMomenten: ContactMoment[];
   aangemaaktOp: string;
+  score: number; // lead-score uit de finder (0-100), 0 als onbekend
+}
+
+/** App-instellingen (o.a. standaard e-mail). Eén rij in Supabase. */
+export interface Instellingen {
+  afzenderNaam: string;
+  defaultOnderwerp: string;
+  defaultBericht: string;
 }
 
 // UI-labels (Nederlands, sentence case)

@@ -58,6 +58,7 @@ interface CrmRij {
   volgende_actie_op: string | null;
   contact_momenten: ContactMoment[] | null;
   aangemaakt_op: string;
+  score: number | null;
 }
 
 function vanRij(r: CrmRij): Lead {
@@ -74,6 +75,7 @@ function vanRij(r: CrmRij): Lead {
     volgendeActieOp: r.volgende_actie_op ?? undefined,
     contactMomenten: r.contact_momenten ?? [],
     aangemaaktOp: r.aangemaakt_op,
+    score: r.score ?? 0,
   };
 }
 
@@ -91,6 +93,7 @@ function naarRij(l: Lead): CrmRij {
     volgende_actie_op: l.volgendeActieOp ?? null,
     contact_momenten: l.contactMomenten,
     aangemaakt_op: l.aangemaaktOp,
+    score: l.score ?? 0,
   };
 }
 
@@ -149,6 +152,7 @@ export function addLead(invoer: NieuweLeadInvoer): Lead {
     volgendeActieOp: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
     contactMomenten: [],
     aangemaaktOp: new Date().toISOString(),
+    score: 0,
   };
   zetCache([...cache, nieuweLead]);
   void schrijf(nieuweLead);

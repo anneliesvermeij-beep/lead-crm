@@ -3,9 +3,11 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { DezeWeek } from './pages/DezeWeek';
 import { LeadDetail } from './pages/LeadDetail';
 import { AlleLeads } from './pages/AlleLeads';
+import { Instellingen } from './pages/Instellingen';
 import { Login } from './components/Login';
 import { useSession } from './auth/useSession';
 import { laadAlles } from './store/leadStore';
+import { laadInstellingen } from './store/instellingen';
 
 // HashRouter: werkt op elke statische host (Vercel/Netlify/GitHub Pages) zonder
 // server-config, en een refresh op /lead/:id blijft gewoon werken.
@@ -14,7 +16,10 @@ export default function App() {
 
   // Laad de leads pas ná inloggen (anders blokkeert de database via RLS).
   useEffect(() => {
-    if (session) void laadAlles();
+    if (session) {
+      void laadAlles();
+      void laadInstellingen();
+    }
   }, [session]);
 
   if (laden) {
@@ -34,6 +39,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<DezeWeek />} />
         <Route path="/alle" element={<AlleLeads />} />
+        <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/lead/:id" element={<LeadDetail />} />
       </Routes>
     </HashRouter>

@@ -1,13 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { Lead } from '../types';
 import {
   TEMPLATE_CHIPS,
   getTemplate,
   vulIn,
+  type MailTemplate,
   type TemplateSleutel,
 } from '../mail/mailTemplates';
 import { markeerMailVerstuurd } from '../logic/leadLogic';
 import { saveLead } from '../store/leadStore';
+import { getInstellingen } from '../store/instellingen';
 
 interface Props {
   lead: Lead;
@@ -17,25 +19,40 @@ interface Props {
 
 const HERINNER_OPTIES = [7, 3, 14];
 
+// 'mijn' = de zelf ingestelde standaard-mail uit Instellingen.
+type Sleutel = TemplateSleutel | 'mijn';
+
 export function MailOpstellen({ lead, onSluit, onVerstuurd }: Props) {
-  const [actieveTemplate, setActieveTemplate] = useState<TemplateSleutel>('eerste');
-  const startTemplate = useMemo(
-    () => getTemplate('eerste', lead.branche),
-    [lead.branche],
-  );
+  const instellingen = getInstellingen();
+  const heeftEigen = !!instellingen.defaultBericht.trim();
+
+  function templateVoor(sleutel: Sleutel): MailTemplate {
+    if (sleutel === 'mijn') {
+      return {
+        onderwerp: instellingen.defaultOnderwerp,
+        bericht: instellingen.defaultBericht,
+      };
+    }
+    return getTemplate(sleutel, lead.branche);
+  }
+
+  const startSleutel: Sleutel = heeftEigen ? 'mijn' : 'eerste';
+  const start = templateVoor(startSleutel);
+
+  const [actieveTemplate, setActieveTemplate] = useState<Sleutel>(startSleutel);
   const [onderwerp, setOnderwerp] = useState(
-    vulIn(startTemplate.onderwerp, lead.bedrijfsnaam, ''),
+    vulIn(start.onderwerp, lead.bedrijfsnaam, '', instellingen.afzenderNaam),
   );
   const [bericht, setBericht] = useState(
-    vulIn(startTemplate.bericht, lead.bedrijfsnaam, ''),
+    vulIn(start.bericht, lead.bedrijfsnaam, '', instellingen.afzenderNaam),
   );
   const [herinnerDagen, setHerinnerDagen] = useState(7);
 
-  function kiesTemplate(sleutel: TemplateSleutel) {
+  function kiesTemplate(sleutel: Sleutel) {
     setActieveTemplate(sleutel);
-    const t = getTemplate(sleutel, lead.branche);
-    setOnderwerp(vulIn(t.onderwerp, lead.bedrijfsnaam, ''));
-    setBericht(vulIn(t.bericht, lead.bedrijfsnaam, ''));
+    const t = templateVoor(sleutel);
+    setOnderwerp(vulIn(t.onderwerp, lead.bedrijfsnaam, '', instellingen.afzenderNaam));
+    setBericht(vulIn(t.bericht, lead.bedrijfsnaam, '', instellingen.afzenderNaam));
   }
 
   function openenInMail() {
@@ -67,6 +84,15 @@ export function MailOpstellen({ lead, onSluit, onVerstuurd }: Props) {
         </div>
 
         <div className="chips">
+          {heeftEigen && (
+            <button
+              type="button"
+              className={`chip ${actieveTemplate === 'mijn' ? 'chip-actief' : ''}`}
+              onClick={() => kiesTemplate('mijn')}
+            >
+              Mijn standaard
+            </button>
+          )}
           {TEMPLATE_CHIPS.map((chip) => (
             <button
               key={chip.sleutel}

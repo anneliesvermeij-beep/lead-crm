@@ -679,6 +679,35 @@ textarea:focus {
   flex: 1;
   min-width: 180px;
 }
+
+.rij-alle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.score-bol {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--gewicht-medium);
+  font-size: 14px;
+}
+.score-groen {
+  background: #e5f4ea;
+  color: #1f7a45;
+}
+.score-oranje {
+  background: #fdeede;
+  color: #b3541e;
+}
+.score-rood {
+  background: #fcecea;
+  color: #c0392b;
+}
 .filterbalk input,
 .filterbalk select {
   font-family: inherit;

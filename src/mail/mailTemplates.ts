@@ -23,7 +23,7 @@ const eersteMailPerBranche: Record<Branche, MailTemplate> = {
       'Beste {naam},\n\n' +
       'Ik ben fotograaf gespecialiseerd in food- en productfotografie. Ik zag de producten van {bedrijfsnaam} en zou graag laten zien hoe sterke beelden jullie schap- en online-presentatie kunnen versterken.\n\n' +
       'Zou een korte kennismaking de moeite waard zijn? Dan stuur ik vrijblijvend een paar voorbeelden uit mijn portfolio mee.\n\n' +
-      'Hartelijke groet,\n',
+      'Hartelijke groet,\n{afzender}',
   },
   webshop: {
     onderwerp: 'Productfotografie die meer verkoopt — {bedrijfsnaam}',
@@ -31,7 +31,7 @@ const eersteMailPerBranche: Record<Branche, MailTemplate> = {
       'Beste {naam},\n\n' +
       'Voor webshops maakt goede productfotografie direct verschil in conversie. Ik fotografeer food en producten met een heldere, smaakvolle stijl.\n\n' +
       'Ik denk dat ik de beelden van {bedrijfsnaam} kan versterken. Zin in een vrijblijvend gesprek?\n\n' +
-      'Hartelijke groet,\n',
+      'Hartelijke groet,\n{afzender}',
   },
   horeca: {
     onderwerp: 'Aantrekkelijke gerechtfotografie voor {bedrijfsnaam}',
@@ -39,7 +39,7 @@ const eersteMailPerBranche: Record<Branche, MailTemplate> = {
       'Beste {naam},\n\n' +
       'Ik maak food- en sfeerfotografie voor de horeca — beelden die jullie gerechten en plek laten spreken op menukaart, socials en website.\n\n' +
       'Lijkt het {bedrijfsnaam} wat om hier eens over te sparren? Ik kom graag langs.\n\n' +
-      'Hartelijke groet,\n',
+      'Hartelijke groet,\n{afzender}',
   },
   bureau: {
     onderwerp: 'Food- & productfotograaf voor jullie projecten',
@@ -47,7 +47,7 @@ const eersteMailPerBranche: Record<Branche, MailTemplate> = {
       'Beste {naam},\n\n' +
       'Ik ben food- en productfotograaf en werk graag samen met bureaus zoals {bedrijfsnaam} voor campagnes en klantprojecten.\n\n' +
       'Zullen we kennismaken? Dan weten jullie me te vinden zodra er beeld nodig is.\n\n' +
-      'Hartelijke groet,\n',
+      'Hartelijke groet,\n{afzender}',
   },
   overig: {
     onderwerp: 'Food- & productfotografie voor {bedrijfsnaam}',
@@ -55,7 +55,7 @@ const eersteMailPerBranche: Record<Branche, MailTemplate> = {
       'Beste {naam},\n\n' +
       'Ik ben fotograaf gespecialiseerd in food- en productfotografie en denk dat ik {bedrijfsnaam} kan helpen aan sterkere beelden.\n\n' +
       'Zou een korte kennismaking interessant zijn?\n\n' +
-      'Hartelijke groet,\n',
+      'Hartelijke groet,\n{afzender}',
   },
 };
 
@@ -106,13 +106,15 @@ export const TEMPLATE_CHIPS: { sleutel: TemplateSleutel; label: string }[] = [
   { sleutel: 'leeg', label: 'Leeg' },
 ];
 
-/** Vervangt {bedrijfsnaam} en {naam} in een tekst. */
+/** Vervangt {bedrijfsnaam}, {naam} en {afzender} in een tekst. */
 export function vulIn(
   tekst: string,
   bedrijfsnaam: string,
   naam: string,
+  afzender = '',
 ): string {
   return tekst
     .replaceAll('{bedrijfsnaam}', bedrijfsnaam)
-    .replaceAll('{naam}', naam || 'team');
+    .replaceAll('{naam}', naam || 'team')
+    .replaceAll('{afzender}', afzender);
 }
