@@ -34,6 +34,12 @@ export function isActief(lead: Lead): boolean {
   return lead.status !== 'klant' && lead.status !== 'afgewezen';
 }
 
+/** Heeft deze lead recent nieuws? (nieuwste contactmoment begint met 📰) */
+export function heeftNieuws(lead: Lead): boolean {
+  const nieuwste = lead.contactMomenten[0];
+  return !!nieuwste && nieuwste.notitie.trim().startsWith('📰');
+}
+
 /** Verschijnt op "deze week": actief én volgendeActieOp <= einde van deze week. */
 export function verschijntOpDezeWeek(lead: Lead, nu: Date = new Date()): boolean {
   if (!isActief(lead)) return false;

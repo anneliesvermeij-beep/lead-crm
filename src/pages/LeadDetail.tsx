@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead, logContact } from '../store/leadStore';
-import { snooze, isDatumVerlopen } from '../logic/leadLogic';
+import { snooze, isDatumVerlopen, heeftNieuws } from '../logic/leadLogic';
 import type { ContactMoment, Lead, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { Star } from '../components/Star';
@@ -70,6 +70,9 @@ export function LeadDetail() {
             <p className="detail-sub">
               {BRANCHE_LABELS[lead.branche]}
               {lead.plaats ? ` · ${lead.plaats}` : ''}
+              {heeftNieuws(lead) && (
+                <span className="nieuws-badge" title="Recent nieuws">📰 nieuws</span>
+              )}
             </p>
           </div>
           <div className="detail-kop-acties">
@@ -164,7 +167,7 @@ export function LeadDetail() {
             <ul className="tijdlijn">
               {lead.contactMomenten.map((m, i) => (
                 <li key={m.id} className={`moment ${i === 0 ? 'moment-nieuwste' : ''}`}>
-                  <div className="moment-notitie">{m.notitie}</div>
+                  <div className="moment-notitie">{metLinks(m.notitie)}</div>
                   <div className="moment-meta">
                     {format(new Date(m.datum), 'd MMM yyyy', { locale: nl })} ·{' '}
                     {kanaalLabel(m.kanaal)}
@@ -184,6 +187,20 @@ export function LeadDetail() {
         />
       )}
     </div>
+  );
+}
+
+/** Maakt URLs in een notitie klikbaar (voor o.a. nieuwslinks). */
+function metLinks(tekst: string) {
+  const delen = tekst.split(/(https?:\/\/[^\s]+)/g);
+  return delen.map((deel, i) =>
+    /^https?:\/\//.test(deel) ? (
+      <a key={i} href={deel} target="_blank" rel="noreferrer">
+        bekijk bericht ↗
+      </a>
+    ) : (
+      <span key={i}>{deel}</span>
+    ),
   );
 }
 

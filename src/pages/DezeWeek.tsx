@@ -11,6 +11,7 @@ import {
   sorteerVandaag,
   sorteerLaterDezeWeek,
   snooze,
+  heeftNieuws,
 } from '../logic/leadLogic';
 import type { Lead } from '../types';
 import { BRANCHE_LABELS } from '../types';
@@ -196,7 +197,10 @@ function VandaagRij({
         <Star actief={lead.prioriteit} onClick={onPrioriteit} />
       </div>
       <div className="rij-midden" onClick={onOpen}>
-        <span className="rij-naam">{lead.bedrijfsnaam}</span>
+        <span className="rij-naam">
+          {lead.bedrijfsnaam}
+          {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰 nieuws</span>}
+        </span>
         <span className="rij-context">
           {BRANCHE_LABELS[lead.branche]} · {datumLabel(lead)}
         </span>

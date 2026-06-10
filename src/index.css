@@ -643,6 +643,18 @@ textarea:focus {
   gap: 8px;
 }
 
+.nieuws-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: var(--gewicht-medium);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdeede;
+  color: #b3541e;
+  vertical-align: middle;
+}
+
 /* Responsive -------------------------------------------------------------- */
 
 @media (max-width: 640px) {
