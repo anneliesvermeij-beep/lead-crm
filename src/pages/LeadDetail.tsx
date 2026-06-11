@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead, logContact, verwijderContact } from '../store/leadStore';
-import { snooze, isDatumVerlopen, heeftNieuws } from '../logic/leadLogic';
+import { snooze, isDatumVerlopen, heeftNieuws, scoreTier } from '../logic/leadLogic';
 import type { ContactMoment, Lead, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { Star } from '../components/Star';
@@ -66,6 +66,12 @@ export function LeadDetail() {
                 onClick={() => update({ prioriteit: !lead.prioriteit })}
               />
               <h1>{lead.bedrijfsnaam}</h1>
+              <span
+                className={`score-bol score-klein ${scoreTier(lead.score)}`}
+                title={`Lead-score ${lead.score}`}
+              >
+                {lead.score}
+              </span>
             </div>
             <p className="detail-sub">
               {BRANCHE_LABELS[lead.branche]}

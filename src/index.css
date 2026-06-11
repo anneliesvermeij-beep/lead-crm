@@ -696,6 +696,15 @@ textarea:focus {
   font-weight: var(--gewicht-medium);
   font-size: 14px;
 }
+.score-klein {
+  width: 32px;
+  height: 32px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.rij-compact-score {
+  grid-template-columns: auto 1fr auto auto;
+}
 .score-groen {
   background: #e5f4ea;
   color: #1f7a45;

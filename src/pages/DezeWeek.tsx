@@ -12,6 +12,7 @@ import {
   sorteerLaterDezeWeek,
   snooze,
   heeftNieuws,
+  scoreTier,
 } from '../logic/leadLogic';
 import type { Lead } from '../types';
 import { BRANCHE_LABELS } from '../types';
@@ -145,9 +146,12 @@ export function DezeWeek() {
                 {later.map((lead) => (
                   <li
                     key={lead.id}
-                    className="rij rij-compact"
+                    className="rij rij-compact rij-compact-score"
                     onClick={() => navigate(`/lead/${lead.id}`)}
                   >
+                    <span className={`score-bol score-klein ${scoreTier(lead.score)}`}>
+                      {lead.score}
+                    </span>
                     <span className="rij-naam">
                       {lead.prioriteit && <span className="ster-inline">★</span>}
                       {lead.bedrijfsnaam}
@@ -202,6 +206,9 @@ function VandaagRij({
       <div className="rij-links" onClick={(e) => e.stopPropagation()}>
         <Star actief={lead.prioriteit} onClick={onPrioriteit} />
       </div>
+      <span className={`score-bol ${scoreTier(lead.score)}`} title={`Score ${lead.score}`}>
+        {lead.score}
+      </span>
       <div className="rij-midden" onClick={onOpen}>
         <span className="rij-naam">
           {lead.bedrijfsnaam}

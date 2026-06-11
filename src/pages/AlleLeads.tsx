@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
-import { heeftNieuws } from '../logic/leadLogic';
+import { heeftNieuws, scoreTier } from '../logic/leadLogic';
 import type { Branche, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
@@ -11,12 +11,6 @@ import { StatusBadge } from '../components/StatusBadge';
 type StatusFilter = LeadStatus | 'alle';
 type BrancheFilter = Branche | 'alle';
 type SoortFilter = 'alle' | 'opvolging' | 'voorraad';
-
-function scoreTier(score: number): string {
-  if (score >= 70) return 'score-groen';
-  if (score >= 40) return 'score-oranje';
-  return 'score-rood';
-}
 
 export function AlleLeads() {
   const leads = useLeads();

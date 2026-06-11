@@ -45,6 +45,13 @@ export function heeftNieuws(lead: Lead): boolean {
   return !!nieuwste && nieuwste.notitie.trim().startsWith('📰');
 }
 
+/** Kleurklasse voor de score-bol: groen (≥70), oranje (40-69), rood (<40). */
+export function scoreTier(score: number): string {
+  if (score >= 70) return 'score-groen';
+  if (score >= 40) return 'score-oranje';
+  return 'score-rood';
+}
+
 /** Verschijnt op "deze week": actief én volgendeActieOp <= einde van deze week. */
 export function verschijntOpDezeWeek(lead: Lead, nu: Date = new Date()): boolean {
   if (!isActief(lead)) return false;
