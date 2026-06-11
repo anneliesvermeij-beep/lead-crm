@@ -76,9 +76,6 @@ export function DezeWeek() {
           <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
             Alle leads
           </button>
-          <button className="knop knop-rustig" onClick={() => navigate('/vacatures')}>
-            Vacatures
-          </button>
           <button className="knop knop-rustig" onClick={() => navigate('/instellingen')}>
             Instellingen
           </button>
