@@ -25,11 +25,14 @@ import { MailOpstellen } from '../components/MailOpstellen';
 import { supabase } from '../supabaseClient';
 
 export function DezeWeek() {
-  const leads = useLeads();
+  const alleLeads = useLeads();
   const storeStatus = useStoreStatus();
   const navigate = useNavigate();
   const [nieuwOpen, setNieuwOpen] = useState(false);
   const [mailLead, setMailLead] = useState<Lead | null>(null);
+
+  // Vacature-leads horen in hun eigen tabblad, niet in de werklijst.
+  const leads = useMemo(() => alleLeads.filter((l) => l.bron !== 'vacature'), [alleLeads]);
 
   const vandaag = useMemo(
     () => sorteerVandaag(leads.filter((l) => isVandaagBucket(l))),
@@ -72,6 +75,9 @@ export function DezeWeek() {
         <div className="kop-knoppen">
           <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
             Alle leads
+          </button>
+          <button className="knop knop-rustig" onClick={() => navigate('/vacatures')}>
+            Vacatures
           </button>
           <button className="knop knop-rustig" onClick={() => navigate('/instellingen')}>
             Instellingen

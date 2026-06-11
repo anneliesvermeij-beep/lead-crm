@@ -59,6 +59,7 @@ interface CrmRij {
   contact_momenten: ContactMoment[] | null;
   aangemaakt_op: string;
   score: number | null;
+  bron: string | null;
 }
 
 function vanRij(r: CrmRij): Lead {
@@ -76,6 +77,7 @@ function vanRij(r: CrmRij): Lead {
     contactMomenten: r.contact_momenten ?? [],
     aangemaaktOp: r.aangemaakt_op,
     score: r.score ?? 0,
+    bron: r.bron ?? 'finder',
   };
 }
 
@@ -94,6 +96,7 @@ function naarRij(l: Lead): CrmRij {
     contact_momenten: l.contactMomenten,
     aangemaakt_op: l.aangemaaktOp,
     score: l.score ?? 0,
+    bron: l.bron ?? 'finder',
   };
 }
 
@@ -153,6 +156,7 @@ export function addLead(invoer: NieuweLeadInvoer): Lead {
     contactMomenten: [],
     aangemaaktOp: new Date().toISOString(),
     score: 0,
+    bron: 'finder',
   };
   zetCache([...cache, nieuweLead]);
   void schrijf(nieuweLead);

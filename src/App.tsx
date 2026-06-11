@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { DezeWeek } from './pages/DezeWeek';
 import { LeadDetail } from './pages/LeadDetail';
 import { AlleLeads } from './pages/AlleLeads';
+import { Vacatures } from './pages/Vacatures';
 import { Instellingen } from './pages/Instellingen';
 import { Login } from './components/Login';
 import { useSession } from './auth/useSession';
@@ -39,6 +40,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<DezeWeek />} />
         <Route path="/alle" element={<AlleLeads />} />
+        <Route path="/vacatures" element={<Vacatures />} />
         <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/lead/:id" element={<LeadDetail />} />
       </Routes>

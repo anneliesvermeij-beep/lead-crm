@@ -34,6 +34,7 @@ export interface Lead {
   contactMomenten: ContactMoment[];
   aangemaaktOp: string;
   score: number; // lead-score uit de finder (0-100), 0 als onbekend
+  bron: string; // 'finder' (standaard) of 'vacature'
 }
 
 /** App-instellingen (o.a. standaard e-mail). Eén rij in Supabase. */
