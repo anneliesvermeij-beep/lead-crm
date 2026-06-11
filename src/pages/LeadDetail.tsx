@@ -99,7 +99,7 @@ export function LeadDetail() {
           {lead.telefoon && <a href={`tel:${lead.telefoon}`}>☎ {lead.telefoon}</a>}
           {lead.website && (
             <a href={lead.website} target="_blank" rel="noreferrer">
-              🔗 Website
+              🔗 {lead.bron === 'vacature' ? 'Bekijk vacature' : 'Website'}
             </a>
           )}
         </div>
