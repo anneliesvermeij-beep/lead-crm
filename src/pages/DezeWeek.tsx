@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, differenceInCalendarDays } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead } from '../store/leadStore';
 import {
   isVandaagBucket,
   isLaterDezeWeek,
-  isVerlopen,
   sorteerVandaag,
   sorteerLaterDezeWeek,
   snooze,
@@ -166,7 +165,7 @@ export function DezeWeek() {
                       {lead.prioriteit && <span className="ster-inline">★</span>}
                       {lead.bedrijfsnaam}
                     </span>
-                    <span className="rij-datum">{datumLabel(lead)}</span>
+                    <span className="rij-datum">{recentToegevoegd(lead)}</span>
                     <StatusBadge status={lead.status} />
                   </li>
                 ))}
@@ -210,9 +209,9 @@ function VandaagRij({
   onSnooze: (h: '1week' | '1maand') => void;
   onPrioriteit: () => void;
 }) {
-  const verlopen = isVerlopen(lead);
+  const recent = recentToegevoegd(lead);
   return (
-    <li className={`rij ${verlopen ? 'rij-verlopen' : ''}`} onClick={onOpen}>
+    <li className="rij" onClick={onOpen}>
       <div className="rij-links" onClick={(e) => e.stopPropagation()}>
         <Star actief={lead.prioriteit} onClick={onPrioriteit} />
       </div>
@@ -225,7 +224,8 @@ function VandaagRij({
           {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰 nieuws</span>}
         </span>
         <span className="rij-context">
-          {BRANCHE_LABELS[lead.branche]} · {datumLabel(lead)}
+          {BRANCHE_LABELS[lead.branche]}
+          {recent && <span className="nieuw-tag"> · {recent}</span>}
         </span>
       </div>
       <StatusBadge status={lead.status} />
@@ -249,9 +249,11 @@ function VandaagRij({
   );
 }
 
-function datumLabel(lead: Lead): string {
-  if (!lead.volgendeActieOp) return 'geen datum';
-  const d = new Date(lead.volgendeActieOp);
-  const prefix = isVerlopen(lead) ? 'Verlopen: ' : '';
-  return prefix + format(d, 'd MMM', { locale: nl });
+// Toont alleen "nieuw toegevoegd <datum>" als de lead recent (≤7 dagen) aan de
+// lijst is toegevoegd; anders niets. Geen opvolgdatum, geen 'verlopen'.
+function recentToegevoegd(lead: Lead): string {
+  if (!lead.aangemaaktOp) return '';
+  const dagen = differenceInCalendarDays(new Date(), new Date(lead.aangemaaktOp));
+  if (dagen < 0 || dagen > 7) return '';
+  return `nieuw · toegevoegd ${format(new Date(lead.aangemaaktOp), 'd MMM', { locale: nl })}`;
 }

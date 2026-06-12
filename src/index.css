@@ -691,6 +691,10 @@ textarea:focus {
   font-size: 12.5px;
   margin-top: 2px;
 }
+.nieuw-tag {
+  color: #1f7a45;
+  font-weight: var(--gewicht-medium);
+}
 .score-bol {
   flex-shrink: 0;
   width: 38px;
