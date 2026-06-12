@@ -32,7 +32,7 @@ export function AlleLeads() {
     const z = zoek.trim().toLowerCase();
     return leads
       .filter((l) => {
-        if (l.bron === 'vacature') return false; // eigen tabblad
+        if ((l.bron ?? 'finder') !== 'finder') return false; // aparte bronnen: eigen tabblad
         if (status !== 'alle' && l.status !== status) return false;
         if (branche !== 'alle' && l.branche !== branche) return false;
         if (soort === 'opvolging' && !l.volgendeActieOp) return false;

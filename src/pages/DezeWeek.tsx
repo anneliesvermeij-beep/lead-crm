@@ -31,8 +31,12 @@ export function DezeWeek() {
   const [nieuwOpen, setNieuwOpen] = useState(false);
   const [mailLead, setMailLead] = useState<Lead | null>(null);
 
-  // Vacature-leads horen in hun eigen tabblad, niet in de werklijst.
-  const leads = useMemo(() => alleLeads.filter((l) => l.bron !== 'vacature'), [alleLeads]);
+  // Alleen 'finder'-leads (bureaus) in de werklijst; aparte bronnen
+  // (zoals groeibedrijven) hebben hun eigen tabblad.
+  const leads = useMemo(
+    () => alleLeads.filter((l) => (l.bron ?? 'finder') === 'finder'),
+    [alleLeads],
+  );
 
   const vandaag = useMemo(
     () => sorteerVandaag(leads.filter((l) => isVandaagBucket(l))),
@@ -75,6 +79,9 @@ export function DezeWeek() {
         <div className="kop-knoppen">
           <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
             Alle leads
+          </button>
+          <button className="knop knop-rustig" onClick={() => navigate('/groeibedrijven')}>
+            Groeibedrijven
           </button>
           <button className="knop knop-rustig" onClick={() => navigate('/instellingen')}>
             Instellingen

@@ -685,6 +685,12 @@ textarea:focus {
   align-items: center;
   gap: 12px;
 }
+.rij-reden {
+  display: block;
+  color: #b3541e;
+  font-size: 12.5px;
+  margin-top: 2px;
+}
 .score-bol {
   flex-shrink: 0;
   width: 38px;
