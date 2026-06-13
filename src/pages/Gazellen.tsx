@@ -15,6 +15,7 @@ export function Gazellen() {
     const z = zoek.trim().toLowerCase();
     return alle
       .filter((l) => l.bron === 'gazelle')
+      .filter((l) => l.status !== 'vervallen')
       .filter((l) => !z || `${l.bedrijfsnaam} ${l.plaats ?? ''}`.toLowerCase().includes(z))
       .sort((a, b) => b.score - a.score || a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl'));
   }, [alle, zoek]);
