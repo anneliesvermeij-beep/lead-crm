@@ -7,7 +7,7 @@ import { Gazellen } from './pages/Gazellen';
 import { Instellingen } from './pages/Instellingen';
 import { Login } from './components/Login';
 import { useSession } from './auth/useSession';
-import { laadAlles } from './store/leadStore';
+import { laadAlles, startRealtime, stopRealtime } from './store/leadStore';
 import { laadInstellingen } from './store/instellingen';
 
 // HashRouter: werkt op elke statische host (Vercel/Netlify/GitHub Pages) zonder
@@ -16,10 +16,13 @@ export default function App() {
   const { session, laden } = useSession();
 
   // Laad de leads pas ná inloggen (anders blokkeert de database via RLS).
+  // Start daarna het realtime-abonnement zodat wijzigingen live binnenkomen.
   useEffect(() => {
     if (session) {
       void laadAlles();
       void laadInstellingen();
+      startRealtime();
+      return () => stopRealtime();
     }
   }, [session]);
 

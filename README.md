@@ -19,6 +19,21 @@ nieuwe-lead-formulier zijn overlays.
 - Opslag via een kleine `leadStore`-abstractie (nu `localStorage`; later te
   vervangen door een echte backend zonder UI-wijziging)
 
+## Realtime (live bijwerken)
+
+De store abonneert zich op wijzigingen in `crm_leads`, zodat updates van de
+Python-pijplijn of een tweede tabblad **zonder herladen** binnenkomen. Dit werkt
+alleen als de tabel in de realtime-publicatie zit. Eenmalig aanzetten in de
+Supabase **SQL editor**:
+
+```sql
+alter publication supabase_realtime add table public.crm_leads;
+```
+
+(Of via Dashboard → Database → Replication → `supabase_realtime` → `crm_leads`
+aanvinken.) Zonder deze stap blijft de app werken; updates verschijnen dan pas
+na een handmatige refresh.
+
 ## Starten
 
 ```bash

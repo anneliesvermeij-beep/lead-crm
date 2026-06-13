@@ -1,3 +1,4 @@
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import type { Lead, ContactMoment } from '../types';
 import { genId } from '../logic/leadLogic';
 import { supabase, CRM_TABEL } from '../supabaseClient';
@@ -120,6 +121,46 @@ export async function laadAlles(): Promise<void> {
 function zetCache(next: Lead[]): void {
   cache = next;
   meld();
+}
+
+// --- Realtime ---------------------------------------------------------------
+// Luistert naar wijzigingen in crm_leads (door de Python-pijplijn of een ander
+// tabblad) en werkt de cache live bij — geen handmatig herladen meer nodig.
+// Vereist dat de tabel in de 'supabase_realtime'-publicatie zit (zie README).
+
+let kanaal: RealtimeChannel | null = null;
+
+function pasWijzigingToe(rij: CrmRij): void {
+  const lead = vanRij(rij);
+  const bestaat = cache.some((l) => l.id === lead.id);
+  zetCache(bestaat ? cache.map((l) => (l.id === lead.id ? lead : l)) : [...cache, lead]);
+}
+
+export function startRealtime(): void {
+  if (kanaal) return; // al actief
+  kanaal = supabase
+    .channel('crm_leads-wijzigingen')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: CRM_TABEL },
+      (payload) => {
+        if (payload.eventType === 'DELETE') {
+          const id = (payload.old as { id?: string }).id;
+          if (id) zetCache(cache.filter((l) => l.id !== id));
+          return;
+        }
+        // INSERT en UPDATE leveren de volledige nieuwe rij.
+        pasWijzigingToe(payload.new as CrmRij);
+      },
+    )
+    .subscribe();
+}
+
+export function stopRealtime(): void {
+  if (kanaal) {
+    void supabase.removeChannel(kanaal);
+    kanaal = null;
+  }
 }
 
 async function schrijf(lead: Lead): Promise<void> {
