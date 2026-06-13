@@ -1,0 +1,71 @@
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLeads, useStoreStatus } from '../store/useLeads';
+import { StatusBadge } from '../components/StatusBadge';
+
+export function Gazellen() {
+  const alle = useLeads();
+  const storeStatus = useStoreStatus();
+  const navigate = useNavigate();
+  const [zoek, setZoek] = useState('');
+
+  const resultaat = useMemo(() => {
+    const z = zoek.trim().toLowerCase();
+    return alle
+      .filter((l) => l.bron === 'gazelle')
+      .filter((l) => !z || `${l.bedrijfsnaam} ${l.plaats ?? ''}`.toLowerCase().includes(z))
+      .sort((a, b) => b.score - a.score || a.bedrijfsnaam.localeCompare(b.bedrijfsnaam, 'nl'));
+  }, [alle, zoek]);
+
+  return (
+    <div className="pagina">
+      <header className="app-kop">
+        <div className="app-kop-titel">
+          <span className="studio-naam">Gazellen</span>
+          <span className="app-kop-sub">FD Gazellen — snelgroeiende bedrijven</span>
+        </div>
+        <button className="knop knop-rustig" onClick={() => navigate('/')}>
+          ← Deze week
+        </button>
+      </header>
+
+      <div className="filterbalk">
+        <input
+          className="zoek"
+          placeholder="Zoek op naam of plaats…"
+          value={zoek}
+          onChange={(e) => setZoek(e.target.value)}
+        />
+      </div>
+
+      {storeStatus === 'laden' && alle.length === 0 ? (
+        <p className="rustige-tekst">Bezig met laden…</p>
+      ) : resultaat.length === 0 ? (
+        <div className="leeg-vlak">
+          <p>Nog geen Gazellen in de lijst.</p>
+        </div>
+      ) : (
+        <>
+          <p className="rustige-tekst" style={{ marginBottom: 10 }}>
+            {resultaat.length} bedrijven
+          </p>
+          <ul className="lijst lijst-compact">
+            {resultaat.map((lead) => (
+              <li
+                key={lead.id}
+                className="rij rij-compact"
+                onClick={() => navigate(`/lead/${lead.id}`)}
+              >
+                <span className="rij-naam">{lead.bedrijfsnaam}</span>
+                <span className="rij-datum">
+                  {lead.website ? new URL(lead.website).hostname.replace('www.', '') : 'geen website'}
+                </span>
+                <StatusBadge status={lead.status} />
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
