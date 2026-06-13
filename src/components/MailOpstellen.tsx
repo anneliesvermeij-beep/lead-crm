@@ -36,28 +36,31 @@ export function MailOpstellen({ lead, onSluit, onVerstuurd }: Props) {
     return getTemplate(sleutel, lead.branche);
   }
 
+  // Voorkeur voor de contactpersoon: e-mail voor de ontvanger, naam in de aanhef.
+  const ontvanger = lead.contactEmail || lead.email || '';
+  const contactNaam = lead.contactNaam ?? '';
+
   const startSleutel: Sleutel = heeftEigen ? 'mijn' : 'eerste';
   const start = templateVoor(startSleutel);
 
   const [actieveTemplate, setActieveTemplate] = useState<Sleutel>(startSleutel);
   const [onderwerp, setOnderwerp] = useState(
-    vulIn(start.onderwerp, lead.bedrijfsnaam, '', instellingen.afzenderNaam),
+    vulIn(start.onderwerp, lead.bedrijfsnaam, contactNaam, instellingen.afzenderNaam),
   );
   const [bericht, setBericht] = useState(
-    vulIn(start.bericht, lead.bedrijfsnaam, '', instellingen.afzenderNaam),
+    vulIn(start.bericht, lead.bedrijfsnaam, contactNaam, instellingen.afzenderNaam),
   );
   const [herinnerDagen, setHerinnerDagen] = useState(7);
 
   function kiesTemplate(sleutel: Sleutel) {
     setActieveTemplate(sleutel);
     const t = templateVoor(sleutel);
-    setOnderwerp(vulIn(t.onderwerp, lead.bedrijfsnaam, '', instellingen.afzenderNaam));
-    setBericht(vulIn(t.bericht, lead.bedrijfsnaam, '', instellingen.afzenderNaam));
+    setOnderwerp(vulIn(t.onderwerp, lead.bedrijfsnaam, contactNaam, instellingen.afzenderNaam));
+    setBericht(vulIn(t.bericht, lead.bedrijfsnaam, contactNaam, instellingen.afzenderNaam));
   }
 
   function openenInMail() {
-    const adres = lead.email ?? '';
-    const url = `mailto:${encodeURIComponent(adres)}?subject=${encodeURIComponent(
+    const url = `mailto:${encodeURIComponent(ontvanger)}?subject=${encodeURIComponent(
       onderwerp,
     )}&body=${encodeURIComponent(bericht)}`;
     // Open de mailclient.
@@ -135,7 +138,7 @@ export function MailOpstellen({ lead, onSluit, onVerstuurd }: Props) {
           </div>
         </div>
 
-        {!lead.email && (
+        {!ontvanger && (
           <p className="melding melding-waarschuwing">
             Deze lead heeft geen e-mailadres — de mailclient opent zonder ontvanger.
           </p>
