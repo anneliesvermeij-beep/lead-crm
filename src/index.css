@@ -188,36 +188,18 @@ h2 {
   gap: 4px;
 }
 
-/* Lead-kaart met contactpersoon-velden: hoofdregel boven, invelden eronder. */
-.rij-met-contact {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-}
-.rij-hoofd {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
+/* Contactpersoon-sectie in het lead-detailscherm. */
 .contactpersoon-velden {
   display: flex;
-  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  padding-top: 10px;
-  border-top: 1px solid var(--rand);
-}
-.contactpersoon-label {
-  font-size: 12px;
-  color: var(--tekst-zacht);
-  font-weight: var(--gewicht-medium);
+  margin-top: 8px;
 }
 .cp-invoer {
   flex: 1;
-  min-width: 120px;
-  padding: 6px 9px;
-  font-size: 13px;
+  min-width: 140px;
+  padding: 8px 10px;
+  font-size: 14px;
   border: 1px solid var(--rand);
   border-radius: 8px;
   background: var(--achtergrond, #fff);

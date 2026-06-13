@@ -79,7 +79,7 @@ export function DezeWeek() {
             Alle leads
           </button>
           <button className="knop knop-rustig" onClick={() => navigate('/gazellen')}>
-            Gazellen
+            Opkomende Bedrijven
           </button>
           <button className="knop knop-rustig" onClick={() => navigate('/instellingen')}>
             Instellingen
@@ -210,88 +210,41 @@ function VandaagRij({
 }) {
   const recent = recentToegevoegd(lead);
   return (
-    <li className="rij rij-met-contact">
-      <div className="rij-hoofd" onClick={onOpen}>
-        <div className="rij-links" onClick={(e) => e.stopPropagation()}>
-          <Star actief={lead.prioriteit} onClick={onPrioriteit} />
-        </div>
-        <span className={`score-bol ${scoreTier(lead.score)}`} title={`Score ${lead.score}`}>
-          {lead.score}
-        </span>
-        <div className="rij-midden">
-          <span className="rij-naam">
-            {lead.bedrijfsnaam}
-            {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰 nieuws</span>}
-          </span>
-          <span className="rij-context">
-            {BRANCHE_LABELS[lead.branche]}
-            {recent && <span className="nieuw-tag"> · {recent}</span>}
-          </span>
-        </div>
-        <StatusBadge status={lead.status} />
-        <div className="rij-acties" onClick={(e) => e.stopPropagation()}>
-          {lead.telefoon && (
-            <a
-              className="icoon-knop"
-              href={`tel:${lead.telefoon}`}
-              title="Bellen"
-              onClick={(e) => e.stopPropagation()}
-            >
-              ☎
-            </a>
-          )}
-          <button className="icoon-knop" title="Mailen" onClick={onMail}>
-            ✉
-          </button>
-          <SnoozeMenu onSnooze={onSnooze} />
-        </div>
+    <li className="rij" onClick={onOpen}>
+      <div className="rij-links" onClick={(e) => e.stopPropagation()}>
+        <Star actief={lead.prioriteit} onClick={onPrioriteit} />
       </div>
-      <ContactpersoonVelden lead={lead} />
+      <span className={`score-bol ${scoreTier(lead.score)}`} title={`Score ${lead.score}`}>
+        {lead.score}
+      </span>
+      <div className="rij-midden" onClick={onOpen}>
+        <span className="rij-naam">
+          {lead.bedrijfsnaam}
+          {heeftNieuws(lead) && <span className="nieuws-badge" title="Recent nieuws">📰 nieuws</span>}
+        </span>
+        <span className="rij-context">
+          {BRANCHE_LABELS[lead.branche]}
+          {recent && <span className="nieuw-tag"> · {recent}</span>}
+        </span>
+      </div>
+      <StatusBadge status={lead.status} />
+      <div className="rij-acties" onClick={(e) => e.stopPropagation()}>
+        {lead.telefoon && (
+          <a
+            className="icoon-knop"
+            href={`tel:${lead.telefoon}`}
+            title="Bellen"
+            onClick={(e) => e.stopPropagation()}
+          >
+            ☎
+          </a>
+        )}
+        <button className="icoon-knop" title="Mailen" onClick={onMail}>
+          ✉
+        </button>
+        <SnoozeMenu onSnooze={onSnooze} />
+      </div>
     </li>
-  );
-}
-
-/** Compacte invelden voor de contactpersoon (naam/e-mail/telefoon). Slaat op
- *  bij verlaten van een veld, alleen als de waarde echt veranderd is. */
-function ContactpersoonVelden({ lead }: { lead: Lead }) {
-  const [naam, setNaam] = useState(lead.contactNaam ?? '');
-  const [email, setEmail] = useState(lead.contactEmail ?? '');
-  const [telefoon, setTelefoon] = useState(lead.contactTelefoon ?? '');
-
-  function bewaar(veld: 'contactNaam' | 'contactEmail' | 'contactTelefoon', waarde: string) {
-    const schoon = waarde.trim();
-    const huidig = lead[veld] ?? '';
-    if (schoon === huidig) return; // niets veranderd
-    saveLead({ ...lead, [veld]: schoon || undefined });
-  }
-
-  return (
-    <div className="contactpersoon-velden" onClick={(e) => e.stopPropagation()}>
-      <span className="contactpersoon-label">Contactpersoon</span>
-      <input
-        className="cp-invoer"
-        placeholder="Naam"
-        value={naam}
-        onChange={(e) => setNaam(e.target.value)}
-        onBlur={() => bewaar('contactNaam', naam)}
-      />
-      <input
-        className="cp-invoer"
-        type="email"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        onBlur={() => bewaar('contactEmail', email)}
-      />
-      <input
-        className="cp-invoer"
-        type="tel"
-        placeholder="Telefoon"
-        value={telefoon}
-        onChange={(e) => setTelefoon(e.target.value)}
-        onBlur={() => bewaar('contactTelefoon', telefoon)}
-      />
-    </div>
   );
 }
 

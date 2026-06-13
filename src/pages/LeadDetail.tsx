@@ -104,6 +104,9 @@ export function LeadDetail() {
           )}
         </div>
 
+        {/* Contactpersoon */}
+        <ContactpersoonSectie key={lead.id} lead={lead} />
+
         {/* Statusregel */}
         <div className="statusregel">
           <label className="veld veld-inline">
@@ -203,6 +206,51 @@ export function LeadDetail() {
           onVerstuurd={() => setMailOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+/** Bewerkbare contactpersoon-gegevens (naam/e-mail/telefoon). Slaat op bij het
+ *  verlaten van een veld, alleen als de waarde echt veranderd is. */
+function ContactpersoonSectie({ lead }: { lead: Lead }) {
+  const [naam, setNaam] = useState(lead.contactNaam ?? '');
+  const [email, setEmail] = useState(lead.contactEmail ?? '');
+  const [telefoon, setTelefoon] = useState(lead.contactTelefoon ?? '');
+
+  function bewaar(veld: 'contactNaam' | 'contactEmail' | 'contactTelefoon', waarde: string) {
+    const schoon = waarde.trim();
+    if (schoon === (lead[veld] ?? '')) return; // niets veranderd
+    saveLead({ ...lead, [veld]: schoon || undefined });
+  }
+
+  return (
+    <div className="contactpersoon-sectie">
+      <h2 className="sectie-titel">Contactpersoon</h2>
+      <div className="contactpersoon-velden">
+        <input
+          className="cp-invoer"
+          placeholder="Naam"
+          value={naam}
+          onChange={(e) => setNaam(e.target.value)}
+          onBlur={() => bewaar('contactNaam', naam)}
+        />
+        <input
+          className="cp-invoer"
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => bewaar('contactEmail', email)}
+        />
+        <input
+          className="cp-invoer"
+          type="tel"
+          placeholder="Telefoon"
+          value={telefoon}
+          onChange={(e) => setTelefoon(e.target.value)}
+          onBlur={() => bewaar('contactTelefoon', telefoon)}
+        />
+      </div>
     </div>
   );
 }

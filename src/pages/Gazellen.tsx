@@ -23,8 +23,8 @@ export function Gazellen() {
     <div className="pagina">
       <header className="app-kop">
         <div className="app-kop-titel">
-          <span className="studio-naam">Gazellen</span>
-          <span className="app-kop-sub">FD Gazellen — snelgroeiende bedrijven</span>
+          <span className="studio-naam">Opkomende Bedrijven</span>
+          <span className="app-kop-sub">Snelgroeiende bedrijven — FD Gazellen</span>
         </div>
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
           ← Deze week
@@ -44,7 +44,7 @@ export function Gazellen() {
         <p className="rustige-tekst">Bezig met laden…</p>
       ) : resultaat.length === 0 ? (
         <div className="leeg-vlak">
-          <p>Nog geen Gazellen in de lijst.</p>
+          <p>Nog geen opkomende bedrijven in de lijst.</p>
         </div>
       ) : (
         <>
