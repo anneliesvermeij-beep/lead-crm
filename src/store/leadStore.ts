@@ -112,17 +112,30 @@ function naarRij(l: Lead): CrmRij {
 
 // --- Laden ------------------------------------------------------------------
 
+// PostgREST geeft per verzoek max. 1000 rijen terug. Met >1000 leads moeten we
+// dus in pagina's laden, anders vallen leads stilletjes buiten de cache.
+const PAGINA_GROOTTE = 1000;
+
 export async function laadAlles(): Promise<void> {
   status = 'laden';
   meld();
-  const { data, error } = await supabase.from(CRM_TABEL).select('*');
-  if (error) {
-    console.error('Supabase laden mislukt:', error.message);
-    status = 'fout';
-    meld();
-    return;
+  const alles: CrmRij[] = [];
+  for (let van = 0; ; van += PAGINA_GROOTTE) {
+    const { data, error } = await supabase
+      .from(CRM_TABEL)
+      .select('*')
+      .range(van, van + PAGINA_GROOTTE - 1);
+    if (error) {
+      console.error('Supabase laden mislukt:', error.message);
+      status = 'fout';
+      meld();
+      return;
+    }
+    const rijen = (data as CrmRij[]) ?? [];
+    alles.push(...rijen);
+    if (rijen.length < PAGINA_GROOTTE) break; // laatste (incomplete) pagina
   }
-  cache = (data as CrmRij[]).map(vanRij);
+  cache = alles.map(vanRij);
   status = 'klaar';
   meld();
 }
