@@ -54,6 +54,9 @@ interface CrmRij {
   email: string | null;
   telefoon: string | null;
   website: string | null;
+  contactpersoon_naam: string | null;
+  contactpersoon_email: string | null;
+  contactpersoon_telefoon: string | null;
   status: Lead['status'];
   prioriteit: boolean;
   volgende_actie_op: string | null;
@@ -72,6 +75,9 @@ function vanRij(r: CrmRij): Lead {
     email: r.email ?? undefined,
     telefoon: r.telefoon ?? undefined,
     website: r.website ?? undefined,
+    contactNaam: r.contactpersoon_naam ?? undefined,
+    contactEmail: r.contactpersoon_email ?? undefined,
+    contactTelefoon: r.contactpersoon_telefoon ?? undefined,
     status: r.status,
     prioriteit: r.prioriteit,
     volgendeActieOp: r.volgende_actie_op ?? undefined,
@@ -91,6 +97,9 @@ function naarRij(l: Lead): CrmRij {
     email: l.email ?? null,
     telefoon: l.telefoon ?? null,
     website: l.website ?? null,
+    contactpersoon_naam: l.contactNaam ?? null,
+    contactpersoon_email: l.contactEmail ?? null,
+    contactpersoon_telefoon: l.contactTelefoon ?? null,
     status: l.status,
     prioriteit: l.prioriteit,
     volgende_actie_op: l.volgendeActieOp ?? null,

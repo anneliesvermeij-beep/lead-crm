@@ -28,6 +28,10 @@ export interface Lead {
   email?: string;
   telefoon?: string;
   website?: string;
+  // Contactpersoon bij dit bedrijf (handmatig in te vullen).
+  contactNaam?: string;
+  contactEmail?: string;
+  contactTelefoon?: string;
   status: LeadStatus; // default 'nieuw'
   prioriteit: boolean; // ster aan/uit, default false
   volgendeActieOp?: string; // ISO-datum; bepaalt of een lead op "deze week" verschijnt
