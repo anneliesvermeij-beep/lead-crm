@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLeads, useStoreStatus } from '../store/useLeads';
+import { scoreTier } from '../logic/leadLogic';
+import { BRANCHE_LABELS } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 
 export function Gazellen() {
@@ -53,13 +55,28 @@ export function Gazellen() {
             {resultaat.map((lead) => (
               <li
                 key={lead.id}
-                className="rij rij-compact"
+                className="rij rij-alle"
                 onClick={() => navigate(`/lead/${lead.id}`)}
               >
-                <span className="rij-naam">{lead.bedrijfsnaam}</span>
-                <span className="rij-datum">
-                  {lead.website ? new URL(lead.website).hostname.replace('www.', '') : 'geen website'}
+                <span className={`score-bol ${scoreTier(lead.score)}`} title={`Score ${lead.score}`}>
+                  {lead.score}
                 </span>
+                <div className="rij-midden">
+                  <span className="rij-naam">
+                    {lead.prioriteit && <span className="ster-inline">★</span>}
+                    {lead.bedrijfsnaam}
+                    {lead.email && (
+                      <span className="mail-indicator" title={`E-mail bekend: ${lead.email}`}>
+                        ✉
+                      </span>
+                    )}
+                  </span>
+                  <span className="rij-context">
+                    {BRANCHE_LABELS[lead.branche]}
+                    {' · '}
+                    {lead.website ? new URL(lead.website).hostname.replace('www.', '') : 'geen website'}
+                  </span>
+                </div>
                 <StatusBadge status={lead.status} />
               </li>
             ))}

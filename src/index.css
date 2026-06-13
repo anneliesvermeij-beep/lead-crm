@@ -204,6 +204,14 @@ h2 {
   margin-right: 6px;
 }
 
+/* Klein envelop-icoon: lead heeft al een e-mailadres (direct te benaderen). */
+.mail-indicator {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--primair);
+  opacity: 0.85;
+}
+
 /* Badges ------------------------------------------------------------------ */
 
 .badge {
