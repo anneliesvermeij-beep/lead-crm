@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format, differenceInCalendarDays } from 'date-fns';
-import { nl } from 'date-fns/locale';
+import { differenceInCalendarDays } from 'date-fns';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead } from '../store/leadStore';
 import {
@@ -249,11 +248,11 @@ function VandaagRij({
   );
 }
 
-// Toont alleen "nieuw toegevoegd <datum>" als de lead recent (≤7 dagen) aan de
-// lijst is toegevoegd; anders niets. Geen opvolgdatum, geen 'verlopen'.
+// Klein 'nieuw'-label als de lead recent (≤7 dagen) aan de lijst is toegevoegd;
+// anders niets. Geen datum, geen opvolgdatum, geen 'verlopen'.
 function recentToegevoegd(lead: Lead): string {
   if (!lead.aangemaaktOp) return '';
   const dagen = differenceInCalendarDays(new Date(), new Date(lead.aangemaaktOp));
   if (dagen < 0 || dagen > 7) return '';
-  return `nieuw · toegevoegd ${format(new Date(lead.aangemaaktOp), 'd MMM', { locale: nl })}`;
+  return 'nieuw';
 }
