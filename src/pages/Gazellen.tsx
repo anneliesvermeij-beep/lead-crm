@@ -33,8 +33,8 @@ export function Gazellen() {
       </header>
 
       <InfoBox>
-        Deze lijst wordt <strong>jaarlijks</strong> ververst — de FD Gazellen
-        verschijnen één keer per jaar.
+        Deze lijst wordt <strong>op verzoek</strong> bijgewerkt — er draait geen
+        automatische verversing.
       </InfoBox>
 
       <div className="filterbalk">

@@ -69,8 +69,8 @@ export function AlleLeads() {
       </header>
 
       <InfoBox>
-        Bureau-data wordt <strong>wekelijks</strong> ververst — elke week wordt er
-        naar nieuwe bureaus gezocht.
+        Bureau-data wordt <strong>op verzoek</strong> bijgewerkt — er draait geen
+        automatische verversing.
       </InfoBox>
 
       <div className="filterbalk">

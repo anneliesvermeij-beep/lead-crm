@@ -86,8 +86,8 @@ export function DezeWeek() {
       </section>
 
       <InfoBox>
-        De werkvoorraad wordt <strong>wekelijks</strong> aangevuld met nieuwe
-        bureau-leads.
+        Leads verschijnen hier zodra hun opvolgdatum is bereikt. Nieuwe leads
+        worden <strong>op verzoek</strong> toegevoegd.
       </InfoBox>
 
       {aanHetLaden ? (
