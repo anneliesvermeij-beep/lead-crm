@@ -5,7 +5,7 @@ import { nl } from 'date-fns/locale';
 import { useLeads, useStoreStatus } from '../store/useLeads';
 import { saveLead, logContact, verwijderContact } from '../store/leadStore';
 import { snooze, isDatumVerlopen, heeftNieuws, scoreTier } from '../logic/leadLogic';
-import type { ContactMoment, Lead, LeadStatus } from '../types';
+import type { Lead, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { Star } from '../components/Star';
 import { SnoozeMenu } from '../components/SnoozeMenu';
@@ -20,7 +20,6 @@ export function LeadDetail() {
 
   const [mailOpen, setMailOpen] = useState(false);
   const [notitie, setNotitie] = useState('');
-  const [kanaal, setKanaal] = useState<ContactMoment['kanaal']>('telefoon');
 
   if (!lead) {
     return (
@@ -39,9 +38,9 @@ export function LeadDetail() {
     saveLead({ ...(lead as Lead), ...velden });
   }
 
-  function voegMomentToe() {
+  function voegNotitieToe() {
     if (!notitie.trim()) return;
-    logContact(lead!.id, kanaal, notitie);
+    logContact(lead!.id, 'overig', notitie);
     setNotitie('');
   }
 
@@ -140,29 +139,21 @@ export function LeadDetail() {
           </label>
         </div>
 
-        {/* Contactmomenten */}
+        {/* Notities */}
         <div className="momenten">
-          <h2 className="sectie-titel">Contactmomenten</h2>
+          <h2 className="sectie-titel">Notities</h2>
 
           <div className="moment-invoer">
             <textarea
-              rows={2}
-              placeholder="Notitie toevoegen — wat besproken?"
+              rows={3}
+              placeholder="Notitie toevoegen…"
               value={notitie}
               onChange={(e) => setNotitie(e.target.value)}
             />
             <div className="moment-invoer-acties">
-              <select
-                value={kanaal}
-                onChange={(e) => setKanaal(e.target.value as ContactMoment['kanaal'])}
-              >
-                <option value="telefoon">Telefoon</option>
-                <option value="email">E-mail</option>
-                <option value="overig">Overig</option>
-              </select>
               <button
                 className="knop knop-rustig"
-                onClick={voegMomentToe}
+                onClick={voegNotitieToe}
                 disabled={!notitie.trim()}
               >
                 Toevoegen
@@ -171,7 +162,7 @@ export function LeadDetail() {
           </div>
 
           {lead.contactMomenten.length === 0 ? (
-            <p className="rustige-tekst">Nog geen contactmomenten.</p>
+            <p className="rustige-tekst">Nog geen notities.</p>
           ) : (
             <ul className="tijdlijn">
               {lead.contactMomenten.map((m, i) => (
@@ -189,8 +180,7 @@ export function LeadDetail() {
                   </button>
                   <div className="moment-notitie">{metLinks(m.notitie)}</div>
                   <div className="moment-meta">
-                    {format(new Date(m.datum), 'd MMM yyyy', { locale: nl })} ·{' '}
-                    {kanaalLabel(m.kanaal)}
+                    {format(new Date(m.datum), 'd MMM yyyy', { locale: nl })}
                   </div>
                 </li>
               ))}
@@ -275,8 +265,4 @@ function initialen(naam: string): string {
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? '')
     .join('');
-}
-
-function kanaalLabel(k: ContactMoment['kanaal']): string {
-  return k === 'email' ? 'E-mail' : k === 'telefoon' ? 'Telefoon' : 'Overig';
 }
