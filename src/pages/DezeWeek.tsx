@@ -86,8 +86,9 @@ export function DezeWeek() {
       </section>
 
       <InfoBox>
-        Leads verschijnen hier zodra hun opvolgdatum is bereikt. Nieuwe leads
-        worden <strong>op verzoek</strong> toegevoegd.
+        Leads verschijnen hier zodra hun opvolgdatum is bereikt. De voorraad is
+        gespreid op <strong>±20 leads per dag</strong>; nieuwe leads worden op
+        verzoek toegevoegd.
       </InfoBox>
 
       {aanHetLaden ? (
