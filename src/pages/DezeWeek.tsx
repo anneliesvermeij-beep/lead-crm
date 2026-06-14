@@ -47,14 +47,9 @@ export function DezeWeek() {
 
   const metrics = useMemo(() => {
     const vandaagAantal = leads.filter((l) => isVandaagBucket(l)).length;
-    const dezeWeek = leads.filter(
-      (l) => isVandaagBucket(l) || isLaterDezeWeek(l),
-    ).length;
-    const nieuw = leads.filter((l) => l.status === 'nieuw').length;
     const benaderd = leads.filter((l) => l.status === 'benaderd').length;
-    const inGesprek = leads.filter((l) => l.status === 'in_gesprek').length;
     const klant = leads.filter((l) => l.status === 'klant').length;
-    return { vandaagAantal, dezeWeek, nieuw, benaderd, inGesprek, klant };
+    return { vandaagAantal, benaderd, klant };
   }, [leads]);
 
   function doeSnooze(lead: Lead, hoeveel: '1week' | '1maand') {
@@ -100,15 +95,12 @@ export function DezeWeek() {
       </header>
 
       <section className="metrics">
-        <MetricTile label="Nieuw" waarde={metrics.nieuw} />
         <MetricTile label="Benaderd" waarde={metrics.benaderd} />
         <MetricTile
           label="Vandaag opvolgen"
           waarde={metrics.vandaagAantal}
           toon="danger"
         />
-        <MetricTile label="Deze week" waarde={metrics.dezeWeek} />
-        <MetricTile label="In gesprek" waarde={metrics.inGesprek} />
         <MetricTile label="Klant geworden" waarde={metrics.klant} toon="success" />
       </section>
 
