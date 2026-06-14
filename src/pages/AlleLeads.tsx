@@ -60,7 +60,7 @@ export function AlleLeads() {
           <span className="app-kop-sub">{leads.length} in totaal</span>
         </div>
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Deze week
+          ← Vandaag
         </button>
       </header>
 

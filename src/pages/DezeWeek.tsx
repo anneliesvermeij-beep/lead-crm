@@ -50,9 +50,11 @@ export function DezeWeek() {
     const dezeWeek = leads.filter(
       (l) => isVandaagBucket(l) || isLaterDezeWeek(l),
     ).length;
+    const nieuw = leads.filter((l) => l.status === 'nieuw').length;
+    const benaderd = leads.filter((l) => l.status === 'benaderd').length;
     const inGesprek = leads.filter((l) => l.status === 'in_gesprek').length;
     const klant = leads.filter((l) => l.status === 'klant').length;
-    return { vandaagAantal, dezeWeek, inGesprek, klant };
+    return { vandaagAantal, dezeWeek, nieuw, benaderd, inGesprek, klant };
   }, [leads]);
 
   function doeSnooze(lead: Lead, hoeveel: '1week' | '1maand') {
@@ -72,7 +74,7 @@ export function DezeWeek() {
       <header className="app-kop">
         <div className="app-kop-titel">
           <span className="studio-naam">Photography &amp; Images</span>
-          <span className="app-kop-sub">Deze week</span>
+          <span className="app-kop-sub">Vandaag</span>
         </div>
         <div className="kop-knoppen">
           <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
@@ -98,6 +100,8 @@ export function DezeWeek() {
       </header>
 
       <section className="metrics">
+        <MetricTile label="Nieuw" waarde={metrics.nieuw} />
+        <MetricTile label="Benaderd" waarde={metrics.benaderd} />
         <MetricTile
           label="Vandaag opvolgen"
           waarde={metrics.vandaagAantal}

@@ -51,7 +51,7 @@ export function LeadDetail() {
     <div className="pagina">
       <div className="detail-terug">
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Deze week
+          ← Vandaag
         </button>
       </div>
 

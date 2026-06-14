@@ -28,7 +28,7 @@ export function Gazellen() {
           <span className="app-kop-sub">Snelgroeiende bedrijven — FD Gazellen</span>
         </div>
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Deze week
+          ← Vandaag
         </button>
       </header>
 
