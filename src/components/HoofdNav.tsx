@@ -3,8 +3,8 @@ import { supabase } from '../supabaseClient';
 
 /**
  * Vaste hoofdnavigatie op de drie lijstschermen. De actieve tab is opgelicht,
- * zodat je altijd ziet waar je bent. 'Vandaag' = werkvoorraad, 'Bureaus' =
- * totale lijst, 'Opkomende Bedrijven' = catalogus.
+ * zodat je altijd ziet waar je bent. 'Werkvoorraad' = wat nu opgevolgd moet
+ * worden, 'Bureaus' = totale lijst, 'Opkomende Bedrijven' = catalogus.
  */
 export function HoofdNav({ onNieuweLead }: { onNieuweLead?: () => void }) {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export function HoofdNav({ onNieuweLead }: { onNieuweLead?: () => void }) {
     <nav className="hoofd-nav">
       <div className="hoofd-nav-tabs">
         <NavLink to="/" end className="nav-tab">
-          Vandaag
+          Werkvoorraad
         </NavLink>
         <NavLink to="/alle" className="nav-tab">
           Bureaus

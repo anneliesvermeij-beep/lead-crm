@@ -5,6 +5,7 @@ import { scoreTier } from '../logic/leadLogic';
 import { BRANCHE_LABELS } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { HoofdNav } from '../components/HoofdNav';
+import { InfoBox } from '../components/InfoBox';
 
 export function Gazellen() {
   const alle = useLeads();
@@ -30,6 +31,11 @@ export function Gazellen() {
         </div>
         <HoofdNav />
       </header>
+
+      <InfoBox>
+        Deze lijst wordt <strong>jaarlijks</strong> ververst — de FD Gazellen
+        verschijnen één keer per jaar.
+      </InfoBox>
 
       <div className="filterbalk">
         <input

@@ -8,6 +8,7 @@ import type { Branche, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { HoofdNav } from '../components/HoofdNav';
+import { InfoBox } from '../components/InfoBox';
 
 type StatusFilter = LeadStatus | 'alle';
 type BrancheFilter = Branche | 'alle';
@@ -66,6 +67,11 @@ export function AlleLeads() {
         </div>
         <HoofdNav />
       </header>
+
+      <InfoBox>
+        Bureau-data wordt <strong>wekelijks</strong> ververst — elke week wordt er
+        naar nieuwe bureaus gezocht.
+      </InfoBox>
 
       <div className="filterbalk">
         <input

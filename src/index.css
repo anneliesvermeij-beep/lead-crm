@@ -112,6 +112,26 @@ h2 {
   gap: 8px;
   flex-wrap: wrap;
 }
+
+/* Informatiebanner (o.a. verversfrequentie van een lijst). */
+.infobox {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 13px;
+  margin-bottom: 18px;
+  background: #eef3fe;
+  border: 1px solid #d3e0fb;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--tekst);
+}
+.infobox-icoon {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
 .app-kop-titel {
   display: flex;
   flex-direction: column;

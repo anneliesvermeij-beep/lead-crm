@@ -31,7 +31,7 @@ export function Instellingen() {
           <span className="app-kop-sub">Standaard e-mail</span>
         </div>
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Vandaag
+          ← Werkvoorraad
         </button>
       </header>
 

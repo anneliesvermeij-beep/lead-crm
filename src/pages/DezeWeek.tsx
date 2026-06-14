@@ -21,6 +21,7 @@ import { SnoozeMenu } from '../components/SnoozeMenu';
 import { NieuweLeadForm } from '../components/NieuweLeadForm';
 import { MailOpstellen } from '../components/MailOpstellen';
 import { HoofdNav } from '../components/HoofdNav';
+import { InfoBox } from '../components/InfoBox';
 
 export function DezeWeek() {
   const alleLeads = useLeads();
@@ -68,8 +69,8 @@ export function DezeWeek() {
     <div className="pagina">
       <header className="app-kop">
         <div className="app-kop-titel">
-          <span className="studio-naam">Vandaag</span>
-          <span className="app-kop-sub">Werkvoorraad — leads die nu actie nodig hebben</span>
+          <span className="studio-naam">Werkvoorraad</span>
+          <span className="app-kop-sub">Leads die nu actie nodig hebben</span>
         </div>
         <HoofdNav onNieuweLead={() => setNieuwOpen(true)} />
       </header>
@@ -83,6 +84,11 @@ export function DezeWeek() {
         />
         <MetricTile label="Klant geworden" waarde={metrics.klant} toon="success" />
       </section>
+
+      <InfoBox>
+        De werkvoorraad wordt <strong>wekelijks</strong> aangevuld met nieuwe
+        bureau-leads.
+      </InfoBox>
 
       {aanHetLaden ? (
         <div className="leeg-vlak">
