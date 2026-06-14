@@ -7,6 +7,7 @@ import { heeftNieuws, scoreTier } from '../logic/leadLogic';
 import type { Branche, LeadStatus } from '../types';
 import { BRANCHE_LABELS, STATUS_LABELS, STATUS_VOLGORDE } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
+import { HoofdNav } from '../components/HoofdNav';
 
 type StatusFilter = LeadStatus | 'alle';
 type BrancheFilter = Branche | 'alle';
@@ -58,13 +59,12 @@ export function AlleLeads() {
         <div className="app-kop-titel">
           <span className="studio-naam">Bureaus</span>
           <span className="app-kop-sub">
+            Totale lijst —{' '}
             {leads.filter((l) => (l.bron ?? 'finder') === 'finder' && l.status !== 'vervallen').length}{' '}
             reclame- &amp; communicatiebureaus
           </span>
         </div>
-        <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Vandaag
-        </button>
+        <HoofdNav />
       </header>
 
       <div className="filterbalk">

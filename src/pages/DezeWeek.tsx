@@ -20,7 +20,7 @@ import { Star } from '../components/Star';
 import { SnoozeMenu } from '../components/SnoozeMenu';
 import { NieuweLeadForm } from '../components/NieuweLeadForm';
 import { MailOpstellen } from '../components/MailOpstellen';
-import { supabase } from '../supabaseClient';
+import { HoofdNav } from '../components/HoofdNav';
 
 export function DezeWeek() {
   const alleLeads = useLeads();
@@ -68,30 +68,10 @@ export function DezeWeek() {
     <div className="pagina">
       <header className="app-kop">
         <div className="app-kop-titel">
-          <span className="studio-naam">Photography &amp; Images</span>
-          <span className="app-kop-sub">Vandaag</span>
+          <span className="studio-naam">Vandaag</span>
+          <span className="app-kop-sub">Werkvoorraad — leads die nu actie nodig hebben</span>
         </div>
-        <div className="kop-knoppen">
-          <button className="knop knop-rustig" onClick={() => navigate('/alle')}>
-            Bureaus
-          </button>
-          <button className="knop knop-rustig" onClick={() => navigate('/gazellen')}>
-            Opkomende Bedrijven
-          </button>
-          <button className="knop knop-rustig" onClick={() => navigate('/instellingen')}>
-            Instellingen
-          </button>
-          <button className="knop knop-rustig" onClick={() => setNieuwOpen(true)}>
-            + Nieuwe lead
-          </button>
-          <button
-            className="knop knop-rustig"
-            onClick={() => supabase.auth.signOut()}
-            title="Uitloggen"
-          >
-            Uitloggen
-          </button>
-        </div>
+        <HoofdNav onNieuweLead={() => setNieuwOpen(true)} />
       </header>
 
       <section className="metrics">

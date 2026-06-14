@@ -4,6 +4,7 @@ import { useLeads, useStoreStatus } from '../store/useLeads';
 import { scoreTier } from '../logic/leadLogic';
 import { BRANCHE_LABELS } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
+import { HoofdNav } from '../components/HoofdNav';
 
 export function Gazellen() {
   const alle = useLeads();
@@ -25,11 +26,9 @@ export function Gazellen() {
       <header className="app-kop">
         <div className="app-kop-titel">
           <span className="studio-naam">Opkomende Bedrijven</span>
-          <span className="app-kop-sub">Snelgroeiende bedrijven — FD Gazellen</span>
+          <span className="app-kop-sub">Catalogus — snelgroeiende bedrijven, nog niet in opvolging</span>
         </div>
-        <button className="knop knop-rustig" onClick={() => navigate('/')}>
-          ← Vandaag
-        </button>
+        <HoofdNav />
       </header>
 
       <div className="filterbalk">
