@@ -56,8 +56,11 @@ export function AlleLeads() {
     <div className="pagina">
       <header className="app-kop">
         <div className="app-kop-titel">
-          <span className="studio-naam">Alle leads</span>
-          <span className="app-kop-sub">{leads.length} in totaal</span>
+          <span className="studio-naam">Bureaus</span>
+          <span className="app-kop-sub">
+            {leads.filter((l) => (l.bron ?? 'finder') === 'finder' && l.status !== 'vervallen').length}{' '}
+            reclame- &amp; communicatiebureaus
+          </span>
         </div>
         <button className="knop knop-rustig" onClick={() => navigate('/')}>
           ← Vandaag
